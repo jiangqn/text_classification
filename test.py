@@ -17,13 +17,13 @@ train_labels = params['train_labels']
 val_texts = params['val_texts']
 val_labels = params['val_labels']
 
-model = GruClassifier(vocab_size=vocab_size, class_num=class_num).cuda()
+model = TextCNN(vocab_size=vocab_size, class_num=class_num).cuda()
 
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 batch_size = 100
 
-a = 0
+max_accuracy = 0
 
 for epoch in range(50):
     num_train = train_texts.shape[0]
@@ -53,7 +53,7 @@ for epoch in range(50):
         _, predicts = outputs.max(dim=1)
         total_cases += batch_labels.shape[0]
         correct_cases += (predicts == batch_labels).sum().item()
-    a = max(a, correct_cases / total_cases)
+    max_accuracy = max(max_accuracy, correct_cases / total_cases)
     print('epoch[%d]\taccuracy: %.4f' % (epoch, correct_cases / total_cases))
 
-print(a)
+print(max_accuracy)
