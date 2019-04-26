@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from memory_module import Memory
 
 class TextCNN(nn.Module):
 

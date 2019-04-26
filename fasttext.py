@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from memory_module import Memory
 
 class FastText(nn.Module):
     
