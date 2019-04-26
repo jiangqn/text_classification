@@ -5,7 +5,7 @@ from text_cnn import *
 import pickle
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 with open('./dataset/params.pickle', 'rb') as handle:
     params = pickle.load(handle)
@@ -17,7 +17,10 @@ train_labels = params['train_labels']
 val_texts = params['val_texts']
 val_labels = params['val_labels']
 
-model = TextCNN(vocab_size=vocab_size, class_num=class_num).cuda()
+model = TextCNN(vocab_size=vocab_size, class_num=class_num)
+# model = FastText(vocab_size=vocab_size, class_num=class_num)
+# model = LstmClassifier(vocab_size=vocab_size, class_num=class_num)
+# model = GruClassifier(vocab_size=vocab_size, class_num=class_num)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
@@ -31,8 +34,8 @@ for epoch in range(50):
     for i in range(num_batches):
         batch_texts = train_texts[i * batch_size: (i + 1) * batch_size]
         batch_labels = train_labels[i * batch_size: (i + 1) * batch_size]
-        batch_texts = torch.tensor(batch_texts).long().cuda()
-        batch_labels = torch.tensor(batch_labels).long().cuda()
+        batch_texts = torch.tensor(batch_texts).long()
+        batch_labels = torch.tensor(batch_labels).long()
         optimizer.zero_grad()
         outputs = model(batch_texts)
         loss = criterion(outputs, batch_labels)
@@ -47,8 +50,8 @@ for epoch in range(50):
     for i in range(num_val_batches):
         batch_texts = val_texts[i * batch_size: (i + 1) * batch_size]
         batch_labels = val_labels[i * batch_size: (i + 1) * batch_size]
-        batch_texts = torch.tensor(batch_texts).long().cuda()
-        batch_labels = torch.tensor(batch_labels).long().cuda()
+        batch_texts = torch.tensor(batch_texts).long()
+        batch_labels = torch.tensor(batch_labels).long()
         outputs = model(batch_texts)
         _, predicts = outputs.max(dim=1)
         total_cases += batch_labels.shape[0]
